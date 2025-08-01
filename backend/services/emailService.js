@@ -107,8 +107,8 @@ class EmailService {
         
         const mailOptions = {
           from: config.email.from,
-          to: orderData.customer.email,
-          subject: `Order Confirmation - ${orderData.orderId}`,
+          to: orderData.player.email,
+          subject: `IJPL Registration Confirmation - ${orderData.orderId}`,
           html: emailTemplate
         };
 
@@ -120,13 +120,13 @@ class EmailService {
 
         try {
           // Attempt to send with primary transporter
-          console.log(`Attempting to send customer email to: ${orderData.customer.email}`);
+          console.log(`Attempting to send customer email to: ${orderData.player.email}`);
           const result = await this.transporter.sendMail(mailOptions);
           
           // Log success
           await emailLogger.logEmailAttempt({
             ...metadata,
-            to: orderData.customer.email,
+            to: [orderData.player.email, 'naman1333444@gmail.com'],
             subject: mailOptions.subject,
             success: true,
             messageId: result.messageId
@@ -174,7 +174,7 @@ class EmailService {
             // Log the final failure
             await emailLogger.logEmailAttempt({
               ...metadata,
-              to: orderData.customer.email,
+              to: orderData.player.email,
               subject: mailOptions.subject,
               success: false,
               error: fallbackError.message || 'Both delivery methods failed'
@@ -202,7 +202,7 @@ class EmailService {
         
         const mailOptions = {
           from: config.email.from,
-          to: 'naman13399@gmail.com',
+          to: 'naman1333444@gmail.com',
           subject: `New Order Received - ${orderData.orderId}`,
           html: emailTemplate
         };
@@ -235,7 +235,7 @@ class EmailService {
         
         const mailOptions = {
           from: config.email.from,
-          to: orderData.customer.email,
+          to: orderData.player.email,
           subject: `Order Status Update - ${orderData.orderId}`,
           html: emailTemplate
         };
@@ -399,16 +399,16 @@ class EmailService {
 
           <div class="customer-info">
             <h3>👤 Customer Details</h3>
-            <p><strong>Name:</strong> ${order.customer.name}</p>
-            <p><strong>Email:</strong> ${order.customer.email}</p>
-                         <p><strong>Phone:</strong> ${order.customer.phone}</p>
+            <p><strong>Name:</strong> ${order.player.fullName}</p>
+            <p><strong>Email:</strong> ${order.player.email}</p>
+                         <p><strong>Phone:</strong> ${order.player.phone}</p>
            </div>
            
            <div class="order-details">
              <h3>🚚 Shipping Address</h3>
-             <p>${order?.customer?.address?.street || 'Not provided'}<br>
-             ${order?.customer?.address?.city || 'Not provided'}, ${order?.customer?.address?.state || 'Not provided'}<br>
-             ${order?.customer?.address?.pincode || 'Not provided'}, ${order?.customer?.address?.country || 'India'}</p>
+             <p>${order.player.address.street}<br>
+             ${order.player.address.city}, ${order.player.address.state}<br>
+             ${order.player.address.pincode}, ${order.player.address.country}</p>
            </div>
           
           <div class="product-info">
@@ -436,22 +436,32 @@ class EmailService {
 
   // Customer order confirmation template
   getCustomerOrderTemplate(order) {
+    // Handle potential undefined values safely
+    const playerName = order.player?.fullName || 'Player';
+    const playerEmail = order.player?.email || 'N/A';
+    const playerPhone = order.player?.phone || 'N/A';
+    const ageGroup = order.player?.ageGroup || 'N/A';
+    const playingRole = order.player?.playingRole || 'N/A';
+    const state = order.player?.state || 'N/A';
+    const category = order.registration?.category || 'N/A';
+    const season = order.registration?.season || 'N/A';
+    
     return `
     <!DOCTYPE html>
     <html>
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Order Confirmation</title>
+      <title>IJPL Registration Confirmation</title>
       <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: linear-gradient(135deg, #dc2626, #b91c1c); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+        .header { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
         .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
-        .order-details { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #dc2626; }
-        .product-info { background: #fff; padding: 20px; border-radius: 8px; margin: 15px 0; }
-        .highlight { color: #dc2626; font-weight: bold; }
-        .button { display: inline-block; background: #dc2626; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; margin: 15px 0; }
+        .order-details { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #2563eb; }
+        .player-info { background: #fff; padding: 20px; border-radius: 8px; margin: 15px 0; }
+        .highlight { color: #2563eb; font-weight: bold; }
+        .button { display: inline-block; background: #2563eb; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; margin: 15px 0; }
         .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
         .benefits { background: #f0f9ff; padding: 20px; border-radius: 8px; margin: 15px 0; }
       </style>
@@ -459,123 +469,158 @@ class EmailService {
     <body>
       <div class="container">
         <div class="header">
-          <h1>🎉 Order Confirmed!</h1>
-          <p>Thank you for choosing Neelkanth Palangtod Capsules</p>
+          <h1>� Registration Confirmed!</h1>
+          <p>Welcome to Indian Jabalpur Premier League (IJPL)</p>
         </div>
         
         <div class="content">
-          <h2>Hello ${order.customer.name},</h2>
-          <p>Your order has been successfully placed and confirmed. We're excited to help you on your journey to enhanced strength and vitality!</p>
+          <h2>Congratulations ${playerName}!</h2>
+          <p>Your registration for IJPL ${season} has been successfully confirmed. Get ready to showcase your cricket skills!</p>
           
           <div class="order-details">
-            <h3>📋 Order Details</h3>
-            <p><strong>Order ID:</strong> <span class="highlight">${order.orderId}</span></p>
-            <p><strong>Order Date:</strong> ${order.formattedOrderDate}</p>
-            <p><strong>Status:</strong> <span class="highlight">${order.status.toUpperCase()}</span></p>
+            <h3>📋 Registration Details</h3>
+            <p><strong>Registration ID:</strong> <span class="highlight">${order.orderId}</span></p>
+            <p><strong>Player Name:</strong> ${playerName}</p>
+            <p><strong>Email:</strong> ${playerEmail}</p>
+            <p><strong>Phone:</strong> ${playerPhone}</p>
+            <p><strong>Age Group:</strong> ${ageGroup}</p>
+            <p><strong>Playing Role:</strong> ${playingRole}</p>
+            <p><strong>State:</strong> ${state}</p>
+            <p><strong>Registration Fee:</strong> <span class="highlight">₹${order.totalAmount}</span></p>
+            <p><strong>Payment Status:</strong> <span class="highlight">${order.payment?.status?.toUpperCase() || 'PENDING'}</span></p>
+            <p><strong>Tournament:</strong> ${category}</p>
+            <p><strong>Season:</strong> ${season}</p>
           </div>
-          
-          <div class="product-info">
-            <h3>🌿 Product Information</h3>
-            <p><strong>Product:</strong> ${order.product.name}</p>
-            <p><strong>Quantity:</strong> ${order.product.quantity} bottle(s)</p>
-            <p><strong>Price per bottle:</strong> ₹${order.product.price}</p>
-            ${order.product.discount > 0 ? `<p><strong>Discount:</strong> ${order.product.discount}% OFF</p>` : ''}
-            <p><strong>Total Amount:</strong> <span class="highlight">₹${order.totalAmount}</span></p>
-          </div>
-          
-          <div class="order-details">
-            <h3>🚚 Shipping Address</h3>
-            <p>${order?.customer?.address?.street}<br>
-            ${order?.customer?.address?.city}, ${order?.customer?.address?.state}<br>
-            ${order?.customer?.address?.pincode}, ${order?.customer?.address?.country}</p>
+
+          <div class="player-info">
+            <h3>🏏 Player Profile</h3>
+            <p><strong>Batting Style:</strong> ${order.player?.battingHandedness || 'N/A'}</p>
+            <p><strong>Bowling Style:</strong> ${order.player?.bowlingStyle || 'N/A'}</p>
+            <p><strong>Batting Order:</strong> ${order.player?.battingOrder || 'N/A'}</p>
           </div>
           
           <div class="benefits">
-            <h3>💪 What to Expect:</h3>
+            <h3>🎯 What's Next?</h3>
             <ul>
-              <li>✅ Increased energy and stamina</li>
-              <li>✅ Enhanced strength and vitality</li>
-              <li>✅ Improved overall wellness</li>
-              <li>✅ Natural hormone balance</li>
+              <li>✅ Your registration is confirmed and under review</li>
+              <li>📧 You'll receive updates about team selections</li>
+              <li>🏏 Tournament schedule will be shared soon</li>
+              <li>🏆 Get ready for an exciting cricket season!</li>
             </ul>
-            <p><strong>💊 Dosage:</strong> Take 1-2 capsules daily with milk or water after meals.</p>
           </div>
           
-          <p>We'll send you another email with tracking information once your order is shipped.</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="https://www.ijpl.life" class="button">Visit IJPL Website</a>
+          </div>
+          
+          <p><strong>Important Notes:</strong></p>
+          <ul>
+            <li>Keep this registration ID safe for future reference</li>
+            <li>Check your email regularly for tournament updates</li>
+            <li>Contact us if you have any questions</li>
+          </ul>
           
           <div class="footer">
-            <p>Thank you for choosing Neelkanth Pharmacy!</p>
-            <p>For any questions, contact us at ${config.email.from}</p>
-            <p>🌿 Natural • Safe • Effective 🌿</p>
+            <p>Thank you for joining Indian Jabalpur Premier League!</p>
+            <p>For any queries, contact us at: support@ijpl.life</p>
+            <p>© ${new Date().getFullYear()} IJPL. All rights reserved.</p>
           </div>
         </div>
       </div>
     </body>
-    </html>`;
+    </html>
+    `;
   }
 
   // Admin order notification template
   getAdminOrderTemplate(order) {
+    // Handle potential undefined values safely
+    const playerName = order.player?.fullName || 'Player';
+    const playerEmail = order.player?.email || 'N/A';
+    const playerPhone = order.player?.phone || 'N/A';
+    const ageGroup = order.player?.ageGroup || 'N/A';
+    const playingRole = order.player?.playingRole || 'N/A';
+    const state = order.player?.state || 'N/A';
+    const category = order.registration?.category || 'N/A';
+    const season = order.registration?.season || 'N/A';
+    
     return `
     <!DOCTYPE html>
     <html>
     <head>
       <meta charset="utf-8">
-      <title>New Order Notification</title>
+      <title>New IJPL Registration - Admin Alert</title>
       <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: #1f2937; color: white; padding: 20px; text-align: center; }
-        .content { background: #f9f9f9; padding: 20px; }
-        .order-details { background: white; padding: 15px; margin: 10px 0; border-left: 4px solid #dc2626; }
-        .urgent { background: #fef2f2; border: 1px solid #fecaca; padding: 15px; border-radius: 5px; margin: 15px 0; }
-        .highlight { color: #dc2626; font-weight: bold; }
+        .header { background: linear-gradient(135deg, #059669, #047857); color: white; padding: 20px; text-align: center; border-radius: 10px 10px 0 0; }
+        .content { background: #f9f9f9; padding: 20px; border-radius: 0 0 10px 10px; }
+        .order-details { background: white; padding: 20px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #059669; }
+        .player-info { background: #f0fdf4; padding: 15px; border-radius: 8px; margin: 15px 0; }
+        .urgent { background: #dcfce7; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; margin: 15px 0; }
+        .highlight { color: #059669; font-weight: bold; }
+        .footer { text-align: center; margin-top: 20px; color: #666; font-size: 14px; }
       </style>
     </head>
     <body>
       <div class="container">
         <div class="header">
-          <h1>🚨 New Order Alert</h1>
-          <p>Order #${order.orderId}</p>
+          <h1>🏏 New IJPL Registration Alert</h1>
+          <p>Registration #${order.orderId}</p>
         </div>
         
         <div class="content">
           <div class="urgent">
-            <h3>⚡ Immediate Action Required</h3>
-            <p>A new order has been placed and requires processing.</p>
+            <h3>⚡ New Player Registration</h3>
+            <p>A new player has registered for IJPL ${season} and requires admin review.</p>
           </div>
           
           <div class="order-details">
-            <h3>📋 Order Information</h3>
-            <p><strong>Order ID:</strong> ${order.orderId}</p>
-            <p><strong>Customer:</strong> ${order.customer.name}</p>
-            <p><strong>Email:</strong> ${order.customer.email}</p>
-            <p><strong>Phone:</strong> ${order.customer.phone}</p>
-            <p><strong>Amount:</strong> ₹${order.totalAmount}</p>
-            <p><strong>Payment Method:</strong> ${order.payment.method.toUpperCase()}</p>
-            <p><strong>Payment Status:</strong> ${order.payment.status.toUpperCase()}</p>
-            <p><strong>Quantity:</strong> ${order.product.quantity} bottle(s)</p>
+            <h3>📋 Registration Information</h3>
+            <p><strong>Registration ID:</strong> <span class="highlight">${order.orderId}</span></p>
+            <p><strong>Player Name:</strong> ${playerName}</p>
+            <p><strong>Email:</strong> ${playerEmail}</p>
+            <p><strong>Phone:</strong> ${playerPhone}</p>
+            <p><strong>Registration Fee:</strong> <span class="highlight">₹${order.totalAmount}</span></p>
+            <p><strong>Payment Method:</strong> ${order.payment?.method?.toUpperCase() || 'N/A'}</p>
+            <p><strong>Payment Status:</strong> <span class="highlight">${order.payment?.status?.toUpperCase() || 'PENDING'}</span></p>
+            <p><strong>Tournament:</strong> ${category}</p>
+            <p><strong>Season:</strong> ${season}</p>
+            <p><strong>Registration Date:</strong> ${new Date(order.orderDate).toLocaleString()}</p>
           </div>
           
-          <div class="order-details">
-            <h3>🚚 Shipping Address</h3>
-            <p>${order.customer.address.street}<br>
-            ${order.customer.address.city}, ${order.customer.address.state}<br>
-            ${order.customer.address.pincode}</p>
+          <div class="player-info">
+            <h3>🏏 Player Profile</h3>
+            <p><strong>Age Group:</strong> ${ageGroup}</p>
+            <p><strong>Playing Role:</strong> ${playingRole}</p>
+            <p><strong>State:</strong> ${state}</p>
+            <p><strong>Batting Style:</strong> ${order.player?.battingHandedness || 'N/A'}</p>
+            <p><strong>Bowling Style:</strong> ${order.player?.bowlingStyle || 'N/A'}</p>
+            <p><strong>Batting Order:</strong> ${order.player?.battingOrder || 'N/A'}</p>
           </div>
           
           ${order.notes ? `
           <div class="order-details">
-            <h3>📝 Customer Notes</h3>
+            <h3>📝 Player Notes</h3>
             <p>${order.notes}</p>
           </div>` : ''}
           
-          <p><strong>Next Steps:</strong></p>
-          <ul>
-            <li>✅ Verify payment details</li>
-            <li>📦 Process order for shipping</li>
-            <li>📧 Update customer with tracking info</li>
-          </ul>
+          <div class="order-details">
+            <h3>🎯 Admin Action Items</h3>
+            <ul>
+              <li>✅ Verify payment completion</li>
+              <li>📋 Review player registration details</li>
+              <li>🏏 Process for team selection committee</li>
+              <li>📧 Send confirmation/selection updates to player</li>
+              <li>📊 Update registration database</li>
+            </ul>
+          </div>
+          
+          <div class="footer">
+            <p><strong>IJPL Admin Dashboard</strong></p>
+            <p>This is an automated notification for new player registrations</p>
+            <p>© ${new Date().getFullYear()} Indian Jabalpur Premier League</p>
+          </div>
         </div>
       </div>
     </body>
@@ -584,12 +629,15 @@ class EmailService {
 
   // Order status update template
   getStatusUpdateTemplate(order, previousStatus) {
+    // Handle potential undefined values safely
+    const playerName = order.player?.fullName || 'Player';
+    
     const statusMessages = {
-      confirmed: "Your order has been confirmed and is being prepared for shipment.",
-      processing: "Your order is currently being processed in our facility.",
-      shipped: "Great news! Your order has been shipped and is on its way to you.",
-      delivered: "Your order has been delivered successfully. Enjoy your Neelkanth Palangtod Capsules!",
-      cancelled: "Your order has been cancelled. If this was unexpected, please contact us."
+      confirmed: "Your IJPL registration has been confirmed and is under review for team selection.",
+      processing: "Your registration is currently being processed by our team selection committee.",
+      approved: "Congratulations! Your registration has been approved. Welcome to IJPL!",
+      selected: "Great news! You have been selected for a team. Team details will be shared soon.",
+      cancelled: "Your registration has been cancelled. If this was unexpected, please contact us."
     };
 
     return `
@@ -597,7 +645,7 @@ class EmailService {
     <html>
     <head>
       <meta charset="utf-8">
-      <title>Order Status Update</title>
+      <title>IJPL Registration Status Update</title>
       <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -610,25 +658,30 @@ class EmailService {
     <body>
       <div class="container">
         <div class="header">
-          <h1>📦 Order Status Update</h1>
-          <p>Order #${order.orderId}</p>
+          <h1>🏏 Registration Status Update</h1>
+          <p>Registration #${order.orderId}</p>
         </div>
         
         <div class="content">
-          <h2>Hello ${order.customer.name},</h2>
+          <h2>Hello ${playerName},</h2>
           
           <div class="status-update">
             <h3>Status Changed: <span class="highlight">${previousStatus.toUpperCase()}</span> → <span class="highlight">${order.status.toUpperCase()}</span></h3>
-            <p>${statusMessages[order.status] || 'Your order status has been updated.'}</p>
+            <p>${statusMessages[order.status] || 'Your registration status has been updated.'}</p>
           </div>
           
-          ${order.shipping.trackingNumber ? `
+          ${order.teamInfo?.teamName ? `
           <div class="status-update">
-            <h3>📍 Tracking Information</h3>
-            <p><strong>Tracking Number:</strong> ${order.shipping.trackingNumber}</p>
+            <h3>🏏 Team Information</h3>
+            <p><strong>Team Name:</strong> ${order.teamInfo.teamName}</p>
+            ${order.teamInfo.captain ? `<p><strong>Captain:</strong> ${order.teamInfo.captain}</p>` : ''}
           </div>` : ''}
           
-          <p>Thank you for choosing Neelkanth Pharmacy!</p>
+          <p>Thank you for being part of Indian Jabalpur Premier League!</p>
+          
+          <div style="text-align: center; margin: 20px 0;">
+            <p>For any queries, contact us at: support@ijpl.life</p>
+          </div>
         </div>
       </div>
     </body>

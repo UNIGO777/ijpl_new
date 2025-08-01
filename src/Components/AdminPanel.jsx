@@ -333,6 +333,8 @@ const AdminPanel = () => {
           }
         });
 
+        console.log('Orders response:', response);
+
         const data = await response.json();
         if (data.success) {
           setOrders(data.data.orders);
@@ -490,7 +492,7 @@ const AdminPanel = () => {
 
     const statusColors = {
       pending: 'text-yellow-600 bg-yellow-100',
-      confirmed: 'text-blue-600 bg-blue-100',
+      completed: 'text-green-600 bg-green-100',
       processing: 'text-purple-600 bg-purple-100',
       shipped: 'text-orange-600 bg-orange-100',
       delivered: 'text-green-600 bg-green-100',
@@ -590,8 +592,8 @@ const AdminPanel = () => {
                       <span className="text-sm font-bold text-green-600">₹{order.totalAmount}</span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${statusColors[order.status] || 'text-gray-600 bg-gray-100'}`}>
-                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${statusColors[order.payment.status] || 'text-gray-600 bg-gray-100'}`}>
+                        {order.payment.status} 
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

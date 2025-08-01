@@ -132,9 +132,9 @@ router.post('/create', sanitizeInput, validateOrderCreation, async (req, res) =>
 });
 
 // Verify PhonePe payment and update order
-router.post('/verify-payment', sanitizeInput, async (req, res) => {
+router.get('/verify-payment/:orderId', sanitizeInput, async (req, res) => {
   try {
-    const { orderId } = req.body;
+    const { orderId } = req.params;
 
     // Find order
     const order = await Order.findOne({ orderId });
@@ -161,17 +161,15 @@ router.post('/verify-payment', sanitizeInput, async (req, res) => {
       
       try {
         // Send emails one by one for verified online payment
-        console.log('📧 1. Sending customer confirmation...');
+     
+        await emailService.sendAdminOrderNotification(order);
         await emailService.sendCustomerOrderConfirmation(order);
         console.log('✅ Customer email sent');
         
         console.log('📧 2. Sending admin notification...');
-        await emailService.sendAdminOrderNotification(order);
         console.log('✅ Admin email sent');
         
-        console.log('📧 3. Sending personal notification to:', config.admin.notificationEmail);
-        await emailService.sendNewOrderNotification(order, config.admin.notificationEmail);
-        console.log('✅ Personal notification email sent');
+        
         
         // Update email sent flag after all emails are sent
         order.emailSent.customer = true;
@@ -191,16 +189,7 @@ router.post('/verify-payment', sanitizeInput, async (req, res) => {
       console.log('Payment verified, but emails already sent for this order');
     }
 
-    res.json({
-      success: true,
-      message: 'Payment verified successfully',
-      data: {
-        orderId: order.orderId,
-        status: order.status,
-        paymentStatus: order.payment.status
-      }
-    });
-
+    res.redirect(`http://www.ijpl.life/payment-success?orderId=${orderId}`);
   } catch (error) {
     console.error('Payment verification error:', error);
     res.status(500).json({

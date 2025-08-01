@@ -70,7 +70,7 @@ class PaymentService {
       // Import the request builder
       const { StandardCheckoutPayRequest } = await import('pg-sdk-node');
       
-      const redirectUrl = `https://www.ijpl.life/payment-success?orderId=${orderData.orderId}`;
+      const redirectUrl = `https://ijpl-new-backend.onrender.com/api/orders/payment-success?orderId=${orderData.orderId}`;
       
       const request = StandardCheckoutPayRequest.builder()
         .merchantOrderId(orderData.orderId)
@@ -165,6 +165,7 @@ class PaymentService {
         throw new Error('Failed to verify payment status');
       }
       
+      console.log(order)
       // Map PhonePe states to our order states
       let orderStatus = 'pending';
       let paymentStatus = 'pending';

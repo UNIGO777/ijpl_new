@@ -25,11 +25,12 @@ const PaymentStatus = () => {
   const checkPaymentStatus = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/orders/${orderId}`);
+      const response = await fetch(`https://ijpl-new-backend.onrender.com/api/orders/${orderId}`);
       
       if (!response.ok) {
         console.error('API response not ok:', response.status, response.statusText);
         setPaymentStatus('failed');
+        // console.log('API response not ok:', response.json())
         return;
       }
       
@@ -37,6 +38,7 @@ const PaymentStatus = () => {
       
       if (result.success && result.data) {
         const orderData = result.data;
+        console.log('Order data:', orderData.payment?.status);
         setOrderDetails({
           orderId: orderData.orderId,
           amount: orderData.totalAmount,
@@ -50,11 +52,11 @@ const PaymentStatus = () => {
         });
         
         // Determine payment status based on order status and payment status
-        if (orderData.payment?.status === 'completed' && orderData.status === 'confirmed') {
+        if (orderData.payment?.status === 'completed') {
           setPaymentStatus('success');
-        } else if (orderData.payment?.status === 'failed' || orderData.status === 'cancelled') {
+        } else if (orderData.payment?.status === 'failed') {
           setPaymentStatus('failed');
-        } else if (orderData.payment?.status === 'pending' || orderData.status === 'pending') {
+        } else if (orderData.payment?.status === 'pending') {
           setPaymentStatus('pending');
         } else {
           // For COD or other cases
