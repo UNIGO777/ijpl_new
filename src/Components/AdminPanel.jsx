@@ -391,7 +391,7 @@ const AdminPanel = () => {
           >
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-900">Order Details</h3>
+                <h3 className="text-xl font-bold text-gray-900">Registration Details</h3>
                 <button
                   onClick={() => setShowOrderModal(false)}
                   className="p-2 hover:bg-gray-100 rounded-lg"
@@ -404,7 +404,7 @@ const AdminPanel = () => {
                 {/* Order Info */}
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Order ID</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone Pay Order ID</label>
                     <p className="text-gray-900 font-semibold">{selectedOrder.orderId}</p>
                   </div>
                   <div>
@@ -417,60 +417,72 @@ const AdminPanel = () => {
                       <option value="pending">Pending</option>
                       <option value="confirmed">Confirmed</option>
                       <option value="processing">Processing</option>
-                      <option value="shipped">Shipped</option>
-                      <option value="delivered">Delivered</option>
                       <option value="cancelled">Cancelled</option>
                     </select>
                   </div>
                 </div>
 
-                {/* Customer Info */}
+                {/* Player Info */}
                 <div className="border-t pt-4">
-                  <h4 className="font-semibold text-gray-900 mb-3">Customer Information</h4>
+                  <h4 className="font-semibold text-gray-900 mb-3">Player Information</h4>
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                      <p className="text-gray-900">{selectedOrder.customer.name}</p>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                      <p className="text-gray-900">{selectedOrder.player.fullName}</p>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                      <p className="text-gray-900">{selectedOrder.customer.email}</p>
+                      <p className="text-gray-900">{selectedOrder.player.email}</p>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                      <p className="text-gray-900">{selectedOrder.customer.phone}</p>
+                      <p className="text-gray-900">{selectedOrder.player.phone}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Age Group</label>
+                      <p className="text-gray-900">{selectedOrder.player.ageGroup}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
+                      <p className="text-gray-900">{selectedOrder.player.state}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Playing Role</label>
+                      <p className="text-gray-900">{selectedOrder.player.playingRole}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Batting</label>
+                      <p className="text-gray-900">{selectedOrder.player.battingHandedness}</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Bowling</label>
+                      <p className="text-gray-900">{selectedOrder.player.bowlingStyle}</p>
                     </div>
                   </div>
                 </div>
 
-                {/* Address */}
+                {/* Registration Details */}
                 <div className="border-t pt-4">
-                  <h4 className="font-semibold text-gray-900 mb-3">Shipping Address</h4>
-                  <p className="text-gray-900">
-                    {selectedOrder.customer.address.street}<br />
-                    {selectedOrder.customer.address.city}, {selectedOrder.customer.address.state}<br />
-                    {selectedOrder.customer.address.pincode}, {selectedOrder.customer.address.country}
-                  </p>
-                </div>
-
-                {/* Product & Payment */}
-                <div className="border-t pt-4">
-                  <h4 className="font-semibold text-gray-900 mb-3">Order Details</h4>
+                  <h4 className="font-semibold text-gray-900 mb-3">Registration Details</h4>
                   <div className="bg-gray-50 rounded-lg p-4">
                     <div className="flex justify-between items-center mb-2">
-                      <span>Product:</span>
-                      <span className="font-semibold">{selectedOrder.product.name}</span>
+                      <span>Category:</span>
+                      <span className="font-semibold">{selectedOrder.registration.category}</span>
                     </div>
                     <div className="flex justify-between items-center mb-2">
-                      <span>Quantity:</span>
-                      <span className="font-semibold">{selectedOrder.product.quantity}</span>
+                      <span>Season:</span>
+                      <span className="font-semibold">{selectedOrder.registration.season}</span>
                     </div>
                     <div className="flex justify-between items-center mb-2">
                       <span>Payment Method:</span>
                       <span className="font-semibold capitalize">{selectedOrder.payment.method}</span>
                     </div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span>Payment Status:</span>
+                      <span className="font-semibold capitalize">{selectedOrder.payment.status}</span>
+                    </div>
                     <div className="flex justify-between items-center text-lg font-bold border-t pt-2">
-                      <span>Total Amount:</span>
+                      <span>Registration Fee:</span>
                       <span className="text-red-600">₹{selectedOrder.totalAmount}</span>
                     </div>
                   </div>
