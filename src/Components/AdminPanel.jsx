@@ -122,11 +122,7 @@ const AdminPanel = () => {
             </button>
           </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-500">
-              Default credentials: admin@neelkanthpharmacy.com / admin123
-            </p>
-          </div>
+         
         </motion.div>
       </div>
     );
@@ -134,7 +130,11 @@ const AdminPanel = () => {
 
   // Analytics Dashboard Component
   const AnalyticsDashboard = () => {
-    const [analytics, setAnalytics] = useState(null);
+    const [analytics, setAnalytics] = useState({
+      summary: { totalOrders: 0, totalRevenue: 0, avgOrderValue: 0, totalQuantity: 0 },
+      statusDistribution: [],
+      recentOrders: []
+    });
     const [dateRange, setDateRange] = useState('7d');
 
     useEffect(() => {
@@ -159,14 +159,6 @@ const AdminPanel = () => {
       }
     };
 
-    if (!analytics) {
-      return (
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
-        </div>
-      );
-    }
-
     const statusColors = {
       pending: 'text-yellow-600 bg-yellow-100',
       confirmed: 'text-blue-600 bg-blue-100',
@@ -188,7 +180,7 @@ const AdminPanel = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Registrations</p>
-                <p className="text-2xl font-bold text-gray-900">{analytics.summary.totalOrders || 0}</p>
+                <p className="text-2xl font-bold text-gray-900">{analytics.summary.totalOrders}</p>
               </div>
               <div className="p-3 bg-blue-100 rounded-full">
                 <ShoppingCart className="w-6 h-6 text-blue-600" />
@@ -205,7 +197,7 @@ const AdminPanel = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-                <p className="text-2xl font-bold text-gray-900">₹{analytics.summary.totalRevenue || 0}</p>
+                <p className="text-2xl font-bold text-gray-900">₹{analytics.summary.totalRevenue}</p>
               </div>
               <div className="p-3 bg-green-100 rounded-full">
                 <DollarSign className="w-6 h-6 text-green-600" />
@@ -222,7 +214,7 @@ const AdminPanel = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Average Order</p>
-                <p className="text-2xl font-bold text-gray-900">₹{Math.round(analytics.summary.avgOrderValue || 0)}</p>
+                <p className="text-2xl font-bold text-gray-900">₹{Math.round(analytics.summary.avgOrderValue)}</p>
               </div>
               <div className="p-3 bg-purple-100 rounded-full">
                 <TrendingUp className="w-6 h-6 text-purple-600" />
@@ -239,7 +231,7 @@ const AdminPanel = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Units Sold</p>
-                <p className="text-2xl font-bold text-gray-900">{analytics.summary.totalQuantity || 0}</p>
+                <p className="text-2xl font-bold text-gray-900">{analytics.summary.totalQuantity}</p>
               </div>
               <div className="p-3 bg-orange-100 rounded-full">
                 <Package className="w-6 h-6 text-orange-600" />
@@ -277,12 +269,12 @@ const AdminPanel = () => {
             animate={{ opacity: 1, x: 0 }}
             className="bg-white rounded-xl shadow-lg p-6"
           >
-                            <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Registrations</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Registrations</h3>
             <div className="space-y-3">
               {analytics.recentOrders.slice(0, 5).map((order) => (
                 <div key={order._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div>
-                    <p className="font-medium text-gray-900">{order.customer.name}</p>
+                    <p className="font-medium text-gray-900">{order.player?.fullName || 'Unknown Player'}</p>
                     <p className="text-sm text-gray-600">{order.orderId}</p>
                   </div>
                   <div className="text-right">

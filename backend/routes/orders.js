@@ -441,7 +441,7 @@ router.get('/analytics/summary', verifyToken, verifyAdmin, async (req, res) => {
     const recentOrders = await Order.find(matchConditions)
       .sort({ orderDate: -1 })
       .limit(10)
-      .select('orderId customer.name totalAmount status orderDate')
+      .select('orderId player.fullName totalAmount status orderDate')
       .lean();
 
     res.json({

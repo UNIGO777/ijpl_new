@@ -70,7 +70,7 @@ class PaymentService {
       // Import the request builder
       const { StandardCheckoutPayRequest } = await import('pg-sdk-node');
       
-      const redirectUrl = `https://ijpl-new-backend.onrender.com/api/orders/payment-success?orderId=${orderData.orderId}`;
+      const redirectUrl = `https://ijpl-new-backend.onrender.com/api/orders/verify-payment/${orderData.orderId}`;
       
       const request = StandardCheckoutPayRequest.builder()
         .merchantOrderId(orderData.orderId)
@@ -185,10 +185,11 @@ class PaymentService {
       }
       
       // Update order in database
-      order.orderStatus = orderStatus;
+      order.status = orderStatus;
       order.payment.status = paymentStatus;
       order.payment.phonePeTransactionId = statusResult.transactionId;
       order.payment.verifiedAt = new Date();
+
       
       await order.save();
       

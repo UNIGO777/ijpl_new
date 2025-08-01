@@ -11,123 +11,91 @@ class CronService {
 
   // Initialize cron jobs
   init() {
-    this.setupAbandonedPaymentChecker();
+    this.setupPaymentVerificationChecker();
     console.log('Cron service initialized');
   }
 
-  // Check for abandoned payments
-  setupAbandonedPaymentChecker() {
-    // Run every minute to check for specific time intervals
+  // Check pending payments every minute
+  setupPaymentVerificationChecker() {
     const job = cron.schedule('* * * * *', async () => {
       try {
-        console.log('Running abandoned payment check...');
+        console.log('Running payment verification check...');
         
-        // Check orders created within specific time windows
+        // Get current time and time windows
         const now = Date.now();
+        const threeMinutesAgo = new Date(now - 3 * 60 * 1000);
         
-        // First check: 3 minutes after creation
-        const threeMinCheckTime = new Date(now - 3 * 60 * 1000);
-        const threeMinWindow = new Date(now - (3 * 60 * 1000 + 30 * 1000)); // 3 minutes ± 30 seconds
-        
-        // Second check: 7 minutes after creation (3 + 4)
-        const sevenMinCheckTime = new Date(now - 7 * 60 * 1000);
-        const sevenMinWindow = new Date(now - (7 * 60 * 1000 + 30 * 1000)); // 7 minutes ± 30 seconds
-        
-        // Third check: 12 minutes after creation (3 + 4 + 5)
-        const twelveMinCheckTime = new Date(now - 12 * 60 * 1000);
-        const twelveMinWindow = new Date(now - (12 * 60 * 1000 + 30 * 1000)); // 12 minutes ± 30 seconds
-        
-        // Query for orders that need to be checked (within a time window)
+        // Find pending orders that are less than 3 minutes old
         const pendingOrders = await Order.find({
           'payment.method': 'phonepe',
           'payment.status': 'pending',
-          $or: [
-            // First check
-            {
-              orderDate: { $lte: threeMinCheckTime, $gte: threeMinWindow },
-              'payment.checkCount': { $lt: 1 }
-            },
-            // Second check
-            {
-              orderDate: { $lte: sevenMinCheckTime, $gte: sevenMinWindow },
-              'payment.checkCount': { $eq: 1 }
-            },
-            // Third check
-            {
-              orderDate: { $lte: twelveMinCheckTime, $gte: twelveMinWindow },
-              'payment.checkCount': { $eq: 2 }
-            }
-          ]
+          orderDate: { 
+            $gte: threeMinutesAgo, // Only orders from last 3 minutes
+            $lte: new Date(now) // Up to current time
+          }
         });
 
-        console.log(`Found ${pendingOrders.length} pending orders to check`);
+        console.log(`Found ${pendingOrders.length} recent pending orders to verify`);
 
         for (const order of pendingOrders) {
           try {
-            // Skip if no PhonePe order ID
-            if (!order.payment.phonePeOrderId && !order.orderId) continue;
+            if (!order.orderId) continue;
+
+            console.log(`Verifying payment for recent order: ${order.orderId}`);
             
-            // Increment check count
-            if (!order.payment.checkCount) {
-              order.payment.checkCount = 1;
-            } else {
-              order.payment.checkCount += 1;
-            }
-
-            console.log(`Checking order ${order.orderId} (attempt ${order.payment.checkCount})`);
-
             // Check payment status with PhonePe
-            const paymentDetails = await paymentService.checkOrderPaymentStatus(order.orderId);
-            
-            if (paymentDetails.success && paymentDetails.status === 'paid') {
-              // Use the shared verification function to update the order
-              const updateResult = await paymentService.verifyAndUpdateOrder(order, {
-                phonepe_payment_id: paymentDetails.paymentId
-              });
-              
-              if (updateResult.success) {
-                // Send all confirmation emails sequentially
-                if (!order.emailSent.customer) {
-                  console.log(`🔄 Cron job - sending emails for abandoned payment order: ${order.orderId}`);
-                  
-                  try {
-                    // Send emails one by one
-                    console.log('📧 1. Sending customer confirmation...');
-                    await emailService.sendCustomerOrderConfirmation(order);
-                    
-                    console.log('📧 2. Sending admin notification...');
-                    await emailService.sendAdminOrderNotification(order);
-                    
-                    console.log('📧 3. Sending personal notification...');
-                    await emailService.sendNewOrderNotification(order, config.admin.notificationEmail);
-                    
-                    // Update email sent flag after all emails are sent
-                    order.emailSent.customer = true;
-                    order.emailSent.admin = true;
-                    await order.save();
-                    
-                    console.log(`✅ All emails sent successfully for order: ${order.orderId}`);
-                  } catch (emailError) {
-                    console.error(`❌ Email error for order ${order.orderId}:`, emailError.message);
-                    // Still update flags to avoid retrying
-                    order.emailSent.customer = true;
-                    order.emailSent.admin = true;
-                    await order.save();
-                  }
-                }
+            const updateResult = await paymentService.verifyAndUpdateOrder(order, {});
+
+            if (updateResult.success) {
+              // Send confirmation emails if payment verified
+              if (!order.emailSent.customer) {
+                console.log(`Payment verified - sending emails for order: ${order.orderId}`);
                 
-                console.log(`Updated abandoned payment for order: ${order.orderId} and sent notifications`);
+                try {
+                  // Send emails sequentially like in routes/orders.js
+                  await emailService.sendAdminOrderNotification(order);
+                  await emailService.sendCustomerOrderConfirmation(order);
+                  
+                  // Update email sent flags
+                  order.emailSent.customer = true;
+                  order.emailSent.admin = true;
+                  await order.save();
+                  
+                  console.log(`✅ All emails sent for order: ${order.orderId}`);
+                } catch (emailError) {
+                  console.error(`❌ Email error for order ${order.orderId}:`, emailError.message);
+                  // Still update flags to avoid retrying
+                  order.emailSent.customer = true;
+                  order.emailSent.admin = true;
+                  await order.save();
+                }
               }
-            } else {
-              // Just update the check count
-              await order.save();
+              
+              console.log(`Successfully verified payment for order: ${order.orderId}`);
             }
+
           } catch (error) {
             console.error(`Error processing order ${order.orderId}:`, error);
           }
         }
+
+        // Mark orders older than 3 minutes as expired
+        await Order.updateMany(
+          {
+            'payment.method': 'phonepe',
+            'payment.status': 'pending',
+            orderDate: { $lt: threeMinutesAgo }
+          },
+          {
+            $set: {
+              'payment.status': 'expired',
+              status: 'cancelled'
+            }
+          }
+        );
+
       } catch (error) {
-        console.error('Abandoned payment checker error:', error);
+        console.error('Payment verification checker error:', error);
       }
     });
 
@@ -141,4 +109,4 @@ class CronService {
   }
 }
 
-module.exports = new CronService(); 
+module.exports = new CronService();

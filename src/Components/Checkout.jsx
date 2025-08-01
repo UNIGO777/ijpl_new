@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle, CreditCard, Trophy, Shield, ArrowLeft, Users } from 'lucide-react';
 import PaymentStatusChecker from './PaymentStatusChecker';
+import { toast } from 'react-toastify';
 
 const Checkout = ({ onBack }) => {
   const [formData, setFormData] = useState({
@@ -54,44 +55,56 @@ const Checkout = ({ onBack }) => {
 
     if (!formData.player.fullName.trim()) {
       newErrors.fullName = 'Full name is required';
+      toast.error('Full name is required');
     } else if (formData.player.fullName.length < 2) {
       newErrors.fullName = 'Name must be at least 2 characters';
+      toast.error('Name must be at least 2 characters');
     }
 
     if (!formData.player.email.trim()) {
       newErrors.email = 'Email is required';
+      toast.error('Email is required');
     } else if (!/\S+@\S+\.\S+/.test(formData.player.email)) {
       newErrors.email = 'Email is invalid';
+      toast.error('Email is invalid');
     }
 
     if (!formData.player.phone.trim()) {
       newErrors.phone = 'Phone number is required';
+      toast.error('Phone number is required');
     } else if (!/^[6-9]\d{9}$/.test(formData.player.phone)) {
       newErrors.phone = 'Enter valid 10-digit phone number';
+      toast.error('Enter valid 10-digit phone number');
     }
 
     if (!formData.player.ageGroup) {
       newErrors.ageGroup = 'Age group is required';
+      toast.error('Age group is required');
     }
 
     if (!formData.player.state) {
       newErrors.state = 'State is required';
+      toast.error('State is required');
     }
 
     if (!formData.player.playingRole) {
       newErrors.playingRole = 'Playing role is required';
+      toast.error('Playing role is required');
     }
 
     if (!formData.player.battingHandedness) {
       newErrors.battingHandedness = 'Batting handedness is required';
+      toast.error('Batting handedness is required');
     }
 
     if (!formData.player.bowlingStyle) {
       newErrors.bowlingStyle = 'Bowling style is required';
+      toast.error('Bowling style is required');
     }
 
     if (!formData.player.battingOrder) {
       newErrors.battingOrder = 'Batting order is required';
+      toast.error('Batting order is required');
     }
 
     setErrors(newErrors);
@@ -156,6 +169,7 @@ const Checkout = ({ onBack }) => {
         setOrderDetails(data.data);
         localStorage.setItem('lastOrderId', data.data.orderId);
         setLastOrderId(data.data.orderId);
+        toast.success('Registration successful!');
 
         if (formData.payment.method === 'phonepe' && data.data.redirectUrl) {
           console.log('🚀 Redirecting to PhonePe payment:', data.data.redirectUrl);
@@ -171,6 +185,7 @@ const Checkout = ({ onBack }) => {
       setErrors({ 
         submit: error.message || 'Registration failed. Please try again.' 
       });
+      toast.error(error.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }

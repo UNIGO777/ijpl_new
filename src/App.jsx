@@ -126,9 +126,9 @@ function App() {
         >
           <Link
             to="#checkout"
-            className="bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-3 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 font-bold text-lg flex items-center gap-2"
+            className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 font-bold text-lg flex items-center gap-2"
           >
-            <span>Buy Now</span>
+            <span>Register Now</span>
             <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
           </Link>
         </motion.div>
