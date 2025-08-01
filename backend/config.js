@@ -21,7 +21,7 @@ module.exports = {
 
   // Cricket Registration
   cricket: {
-    registrationFee: parseInt(process.env.REGISTRATION_FEE) || 3300,
+    registrationFee: parseInt(process.env.REGISTRATION_FEE) || 1100,
     league: 'Indian Jabalpur Premier League',
     season: '2025'
   },

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Trophy, Calendar, MapPin, Users } from 'lucide-react'
+import logo from '../assets/logo.jpeg'
 
 const Navbar = () => {
   return (
@@ -7,7 +8,7 @@ const Navbar = () => {
       <div className="flex flex-col lg:flex-row justify-between items-center gap-4">
         {/* Main League Branding */}
         <div className="flex items-center gap-3">
-          <Trophy className="w-8 h-8 text-yellow-400" />
+          <img src={logo} alt="IJPL Logo" className="w-auto h-[7vh] mr-3 rounded-full" />
           <div className="text-center lg:text-left">
             <div className="text-white font-bold text-xl md:text-2xl uppercase">
               Indian Jabalpur Premier League

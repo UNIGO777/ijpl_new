@@ -62,7 +62,7 @@ const orderSchema = new mongoose.Schema({
     fee: {
       type: Number,
       required: true,
-      default: 3300
+      default: 1100
     },
     season: {
       type: String,
@@ -78,7 +78,7 @@ const orderSchema = new mongoose.Schema({
   totalAmount: {
     type: Number,
     required: true,
-    default: 3300
+    default: 1100
   },
   
   status: {

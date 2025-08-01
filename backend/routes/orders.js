@@ -26,7 +26,7 @@ router.post('/create', sanitizeInput, validateOrderCreation, async (req, res) =>
     });
     
     // Get registration fee from environment
-    const registrationFee = parseInt(process.env.REGISTRATION_FEE) || 3300;
+    const registrationFee = parseInt(process.env.REGISTRATION_FEE) || 1100;
     
     // Create registration order
     const order = new Order({

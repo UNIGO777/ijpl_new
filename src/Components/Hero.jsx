@@ -2,6 +2,7 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import heroBg from '../assets/HeroImage.png'
 import { Trophy, Users, Calendar, MapPin } from 'lucide-react'
+import logo from '../assets/logo.jpeg'
 
 // Cricket stadium background image
 const HERO_BG_IMAGE = 'https://images.unsplash.com/photo-1594470117722-de4b9a02ebed?q=80&w=3458&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'; // Cricket stadium background
@@ -57,6 +58,7 @@ const Hero = () => {
             animate="animate"
             className="w-full lg:w-3/5"
           >
+            
             <motion.h1 
               variants={textVariants}
               className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-blue-400 mb-4 uppercase text-center lg:text-left"

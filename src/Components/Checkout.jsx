@@ -27,7 +27,7 @@ const Checkout = ({ onBack }) => {
   const [loading, setLoading] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [orderDetails, setOrderDetails] = useState(null);
-  const [registrationFee, setRegistrationFee] = useState(3300);
+  const [registrationFee, setRegistrationFee] = useState(1100);
   const [lastOrderId, setLastOrderId] = useState(() => {
     return localStorage.getItem('lastOrderId') || null;
   });
