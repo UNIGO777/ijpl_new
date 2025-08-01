@@ -141,7 +141,7 @@ const Checkout = ({ onBack }) => {
     try {
       console.log('🏏 Submitting cricket registration:', formData);
 
-      const response = await fetch('http://localhost:5001/api/orders/create', {
+      const response = await fetch('https://ijpl-new-backend.onrender.com/api/orders/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
