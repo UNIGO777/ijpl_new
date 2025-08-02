@@ -213,7 +213,7 @@ const Testimonials = () => {
                 Register for IJPL 2025
               </a>
               <div className="text-yellow-200 text-sm">
-                ₹3,300 • Limited Spots Available • All Age Groups Welcome
+                1,100 • Limited Spots Available • All Age Groups Welcome
               </div>
             </div>
           </div>

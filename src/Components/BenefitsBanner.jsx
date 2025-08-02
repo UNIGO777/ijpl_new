@@ -160,7 +160,7 @@ const BenefitsBanner = () => {
         >
           <div className="inline-flex items-center gap-3 bg-yellow-500 text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-yellow-400 transition-colors duration-300 cursor-pointer">
             <Trophy className="w-6 h-6" />
-            <span>Register Now for ₹3,300</span>
+            <span>Register Now for 1,100</span>
           </div>
           <p className="text-blue-200 mt-4 text-sm">
             Limited spots available • Early bird registration ending soon

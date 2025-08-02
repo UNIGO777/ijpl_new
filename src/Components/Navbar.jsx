@@ -37,7 +37,7 @@ const Navbar = () => {
 
         {/* Registration CTA */}
         <div className="bg-yellow-500 text-black px-4 py-2 rounded-lg font-bold text-sm uppercase text-center">
-          Register Now - ₹3,300
+          Register Now - 1,100
         </div>
       </div>
     </div>
