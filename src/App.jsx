@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate 
 import Navbar from './Components/Navbar';
 import Hero from './Components/Hero';
 import Home from './Home';
+import { FaWhatsapp } from 'react-icons/fa';
 
 import AdminPanel from './Components/AdminPanel';
 import './App.css';
@@ -118,20 +119,38 @@ function App() {
 
       {/* Global CTA Button for non-admin/checkout pages */}
       {currentPath !== '/admin' && currentPath !== '/checkout' && currentPath !== '/payment-success' && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 1 }}
-          className="fixed bottom-6 right-6 z-40"
-        >
-          <Link
-            to="#checkout"
-            className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 font-bold text-lg flex items-center gap-2"
+        <div className="fixed bottom-6 right-6 z-40 flex flex-col gap-4">
+           <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 1.2 }}
+            className='flex justify-end'
           >
-            <span>Register Now</span>
-            <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-          </Link>
-        </motion.div>
+            <a
+              href="https://wa.me/+917999236121"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-green-500 hover:bg-green-600 w-fit text-white p-3 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center"
+            >
+              <FaWhatsapp size={24} />
+            </a>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 1 }}
+          >
+            <Link
+              to="#checkout"
+              className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 font-bold text-lg flex items-center gap-2"
+            >
+              <span>Register Now</span>
+              <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+            </Link>
+          </motion.div>
+
+         
+        </div>
       )}
 
       {/* Background particles effect for home page */}
