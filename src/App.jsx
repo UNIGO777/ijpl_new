@@ -141,7 +141,7 @@ function App() {
               rel="noopener noreferrer"
               className="bg-green-500 hover:bg-green-600 w-fit text-white p-3 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center"
             >
-              <FaWhatsapp size={24} /
+              <FaWhatsapp size={24} />
             </a>
           </motion.div>
           <motion.div
