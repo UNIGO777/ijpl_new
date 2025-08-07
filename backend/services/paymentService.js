@@ -70,7 +70,7 @@ class PaymentService {
       // Import the request builder
       const { StandardCheckoutPayRequest } = await import('pg-sdk-node');
       
-      const redirectUrl = `https://ijpl-new-backend.onrender.com/api/orders/verify-payment/${orderData.orderId}`;
+      const redirectUrl = `https://api.ijpl.life/api/orders/verify-payment/${orderData.orderId}`;
       
       const request = StandardCheckoutPayRequest.builder()
         .merchantOrderId(orderData.orderId)

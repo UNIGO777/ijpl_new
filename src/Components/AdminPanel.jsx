@@ -41,7 +41,7 @@ const AdminPanel = () => {
       setLoginError('');
 
       try {
-        const response = await fetch('https://ijpl-new-backend.onrender.com/api/admin/login', {
+        const response = await fetch('https://api.ijpl.life/api/admin/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -144,7 +144,7 @@ const AdminPanel = () => {
     const fetchAnalytics = async () => {
       try {
         const token = localStorage.getItem('adminToken');
-        const response = await fetch('https://ijpl-new-backend.onrender.com/api/orders/analytics/summary', {
+        const response = await fetch('https://api.ijpl.life/api/orders/analytics/summary', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -319,7 +319,7 @@ const AdminPanel = () => {
           ...(statusFilter !== 'all' && { status: statusFilter })
         });
 
-        const response = await fetch(`https://ijpl-new-backend.onrender.com/api/orders?${params}`, {
+        const response = await fetch(`https://api.ijpl.life/api/orders?${params}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -358,7 +358,7 @@ const AdminPanel = () => {
     const updateOrderStatus = async (orderId, newStatus) => {
       try {
         const token = localStorage.getItem('adminToken');
-        const response = await fetch(`https://ijpl-new-backend.onrender.com/api/orders/${orderId}/status`, {
+        const response = await fetch(`https://api.ijpl.life/api/orders/${orderId}/status`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',

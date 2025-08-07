@@ -11,7 +11,7 @@ const PaymentStatusChecker = ({ orderId, onSuccess }) => {
       setIsChecking(true);
       
       try {
-        const response = await fetch(`https://ijpl-new-backend.onrender.com/api/orders/${orderId}`);
+        const response = await fetch(`https://api.ijpl.life/api/orders/${orderId}`);
         const data = await response.json();
         
         if (data.success && data.data) {

@@ -25,7 +25,7 @@ const PaymentStatus = () => {
   const checkPaymentStatus = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`https://ijpl-new-backend.onrender.com/api/orders/${orderId}`);
+      const response = await fetch(`https://api.ijpl.life/api/orders/${orderId}`);
       
       if (!response.ok) {
         console.error('API response not ok:', response.status, response.statusText);

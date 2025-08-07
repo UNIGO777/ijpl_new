@@ -101,7 +101,7 @@ PHONEPE_BASE_URL=https://api-preprod.phonepe.com/apis/hermes
    npm run dev
    ```
 
-   The backend will be available at `http://localhost:5001`
+   The backend will be available at `https://api.ijpl.life`
 
 ### Frontend Setup
 

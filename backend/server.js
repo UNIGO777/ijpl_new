@@ -56,10 +56,10 @@ if (config.nodeEnv === 'development') {
 
 // CORS configuration
 const corsOptions = {
-  origin: '*', // Allow all origins
+  origin: '*',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
 };
 
 app.use(cors(corsOptions));
@@ -122,7 +122,7 @@ app.get('/health', cacheMiddleware(300)); // Cache for 5 minutes
 app.get('/', (req, res) => {
   res.json({
     success: true,
-    message: 'Palank Top Backend API',
+    message: 'IJPL Backend API',
     version: '1.0.0',
     docs: '/api/docs'
   });

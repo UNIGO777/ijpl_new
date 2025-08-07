@@ -37,6 +37,7 @@ const Home = () => {
       <div id="checkout">
         <Checkout/>
       </div>
+      
     </> 
   )
 }

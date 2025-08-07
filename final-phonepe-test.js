@@ -28,7 +28,7 @@ async function testPhonePePayment() {
       amount: 1000, // ₹10 in paise
       redirectUrl: 'http://localhost:5173/payment-success',
       redirectMode: 'REDIRECT',
-      callbackUrl: 'http://localhost:5001/api/orders/phonepe-callback',
+      callbackUrl: 'https://api.ijpl.life/api/orders/phonepe-callback',
       mobileNumber: '9999999999',
       paymentInstrument: {
         type: 'PAY_PAGE'

@@ -12,6 +12,7 @@ const {
 const paymentService = require('../services/paymentService');
 const emailService = require('../services/emailService');
 const config = require('../config');
+const axios = require('axios');
 
 // Create new registration
 router.post('/create', sanitizeInput, validateOrderCreation, async (req, res) => {
@@ -91,18 +92,7 @@ router.post('/create', sanitizeInput, validateOrderCreation, async (req, res) =>
 
     // Send emails asynchronously (non-blocking) - Only for Cash on Delivery
     // For online payments, emails will be sent after payment verification
-    if (order.payment.method === 'cod') {
-      console.log('✅ COD Registration - starting email sequence...');
-      
-      // Start email sending tasks without waiting for them to complete
-      emailService.sendAdminOrderNotification(order);
-      emailService.sendCustomerOrderConfirmation(order);
-      
-      console.log('✅ COD Registration created, emails queued for sending in background');
-    } else {
-      console.log('ℹ️  Online payment registration created, emails will be sent after payment verification');
-      console.log('   Payment method was:', order.payment.method);
-    }
+   
 
     res.status(201).json({
       success: true,
@@ -133,8 +123,8 @@ router.post('/create', sanitizeInput, validateOrderCreation, async (req, res) =>
 
 // Verify PhonePe payment and update order
 router.get('/verify-payment/:orderId', sanitizeInput, async (req, res) => {
+  const { orderId } = req.params;
   try {
-    const { orderId } = req.params;
 
     // Find order
     const order = await Order.findOne({ orderId });
@@ -156,7 +146,7 @@ router.get('/verify-payment/:orderId', sanitizeInput, async (req, res) => {
     }
 
     // Send confirmation emails for verified online payments (sequentially)
-    if (!order.emailSent.customer) {
+    if (!order.emailSent.customer && (updateResult.orderStatus === 'confirmed' || updateResult.orderStatus === 'completed')) {
       console.log('💳 Online payment verified - starting sequential email sending...');
       
       try {
@@ -165,6 +155,18 @@ router.get('/verify-payment/:orderId', sanitizeInput, async (req, res) => {
         await emailService.sendAdminOrderNotification(order);
         await emailService.sendCustomerOrderConfirmation(order);
         console.log('✅ Customer email sent');
+        const formattedPhone = order.player.phone.replace(/^0/, '+91');
+
+        const apiUrl = `https://www.fast2sms.com/dev/whatsapp?authorization=${process.env.FAST2SMS_API_KEY}&message_id=${process.env.FAST2SMS_MESSAGE_ID || '3692'}&numbers=${formattedPhone, "+91 7999236121", "+91 7000610047"}&variables_values=${order.orderId}`;
+
+        const response = await axios.get(apiUrl);
+        
+        if (response.status === 200) {
+            console.log(`OTP sent successfully to ${formattedPhone}`);
+           
+        } else {
+            throw new Error('Failed to send OTP');
+        }
         
         console.log('📧 2. Sending admin notification...');
         console.log('✅ Admin email sent');
@@ -189,7 +191,7 @@ router.get('/verify-payment/:orderId', sanitizeInput, async (req, res) => {
       console.log('Payment verified, but emails already sent for this order');
     }
 
-    res.redirect(`http://www.ijpl.life/payment-success?orderId=${orderId}`);
+    // res.redirect(`http://www.ijpl.life/payment-success?orderId=${orderId}`);
   } catch (error) {
     console.error('Payment verification error:', error);
     res.status(500).json({
@@ -197,7 +199,10 @@ router.get('/verify-payment/:orderId', sanitizeInput, async (req, res) => {
       message: 'Payment verification failed',
       error: error.message
     });
+  } finally {
+    res.redirect(`http://www.ijpl.life/payment-success?orderId=${orderId}`);
   }
+
 });
 
 // PhonePe Payment Callback

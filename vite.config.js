@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://ijpl-new-backend.onrender.com',
+        target: 'https://api.ijpl.life',
         changeOrigin: true,
         secure: false
       }
